@@ -1,0 +1,514 @@
+/* ----------------------------------------------------
+   GLOBAL VARIABLES + BASE STYLES
+---------------------------------------------------- */
+
+:root {
+  --gold: #7f6c2e;
+  --cream: #f4f2ea;
+  --text: #444444;
+  --border-soft: #ded8c4;
+
+  /* Research Shelf theme colours */
+  --pbo-bg: #f3e6f1;
+  --pbo-text: #670048;
+
+  --learninghub-bg: #fff7c2;
+  --learninghub-text: #352a00;
+
+  --lrs-bg: #e8eaf3;
+  --lrs-text: #2b3c71;
+
+  --report-bg: #f3efe6;
+  --report-text: #6b5a2a;
+
+  --visual-bg: #e1f5f8;
+  --visual-text: #264c52;
+
+  --opendata-bg: #eaf3ea;
+  --opendata-text: #2e542e;
+}
+
+body {
+  margin: 0;
+  background: #f5f3ec;
+  font-family: "Montserrat", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", sans-serif;
+  color: var(--text);
+}
+
+.page {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 3rem;
+}
+
+/* ----------------------------------------------------
+   MODULE + GRID 
+---------------------------------------------------- */
+
+.module {
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid var(--border-soft);
+  padding: 1.5rem;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.03);
+}
+
+.module.full {
+  width: 100%;
+}
+
+.flex-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.module.half {
+  flex: 1 1 calc(50% - 0.75rem);
+  min-width: 260px;
+}
+
+/* ----------------------------------------------------
+   SHORTS STRIP (homepage carousel)
+---------------------------------------------------- */
+
+.shorts-shell {
+  width: 100%;
+}
+
+.shorts-header {
+  margin-bottom: 1rem;
+}
+
+.shorts-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.shorts-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.shorts-body {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.shorts-strip {
+  display: flex;
+  overflow-x: auto;
+  gap: 16px;
+  scroll-behavior: smooth;
+  padding: 0.25rem 0;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.short-card {
+  flex: 0 0 auto;
+  width: 230px;
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.short-media {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #000;
+}
+
+.short-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+.short-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.65));
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.short-labels {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  color: #fff;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.short-tag {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 3px;
+  width: max-content;
+  font-weight: 500;
+}
+
+/* Reserve two lines of height for the headline block */
+.short-headline {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.2;
+
+  display: -webkit-box;
+  -webkit-line-clamp: 2;     /* allow up to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em;         /* ~2 lines at your font-size */
+}
+
+/* Optional info line between headline and duration */
+.short-info {
+  font-size: 0.82rem;
+  font-weight: 450;           /* slightly stronger than duration */
+  opacity: 0.9;
+  margin-top: 0.15rem;
+  color: #f0f0f0;             /* softer than pure white */
+  line-height: 1.25;
+  min-height: 1.2em;          /* reserve space even if empty */
+}
+
+/* When there's no info, keep the space but hide the text */
+.short-info--empty {
+  opacity: 0;
+}
+
+.short-duration {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+/* CTA play button */
+
+.short-play-button {
+  position: absolute;
+  right: 0.65rem;
+  bottom: 0.65rem;
+  z-index: 4;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 140ms ease-out;
+}
+
+.short-play-button:hover {
+  background: rgba(0, 0, 0, 0.75);
+  border-color: #fff;
+  transform: scale(1.06);
+}
+
+/* Arrows */
+
+.shorts-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-soft);
+  font-size: 20px;
+  color: #444;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.shorts-arrow:hover:not(:disabled) {
+  background: #fff;
+}
+.shorts-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.shorts-arrow-left {
+  left: -18px;
+}
+.shorts-arrow-right {
+  right: -18px;
+}
+
+/* Explore link */
+
+.shorts-footer {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+/* ----------------------------------------------------
+   SHORTS FULLSCREEN VIEWER
+---------------------------------------------------- */
+
+.shorts-viewer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(4px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shorts-viewer {
+  width: min(900px, 95vw);
+  background: #000;
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.shorts-viewer-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 1rem;
+  color: #fff;
+}
+
+.shorts-viewer-title h2 {
+  margin: 0;
+  font-size: 1.3rem;
+}
+
+.shorts-viewer-close {
+  border: none;
+  background: transparent;
+  color: #fff;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.shorts-viewer-body {
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.shorts-viewer-nav {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 4px;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.shorts-viewer-nav:disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
+.shorts-viewer-video-wrap {
+  flex: 1;
+  position: relative;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.shorts-viewer-video {
+  width: 100%;
+  height: 70vh;
+  object-fit: contain;
+  background: #000;
+}
+
+.shorts-viewer-meta {
+  position: absolute;
+  bottom: 0.5rem;
+  right: 0.75rem;
+  background: rgba(0, 0, 0, 0.55);
+  color: #fff;
+  padding: 2px 6px;
+  font-size: 0.75rem;
+  border-radius: 3px;
+}
+
+.shorts-viewer-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.shorts-viewer-pip {
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+  color: #fff;
+  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  font-size: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.shorts-viewer-pip:hover {
+  background: rgba(0, 0, 0, 0.55);
+}
+
+/* ----------------------------------------------------
+   RESEARCH SHELF
+---------------------------------------------------- */
+
+.research-shelf-header h2 {
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.research-shelf-intro {
+  margin-top: 0.25rem;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+.research-shelf-track {
+  margin-top: 1.25rem;
+  display: flex;
+  gap: 1rem;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding-bottom: 0.5rem;
+}
+
+.research-card {
+  flex: 0 0 240px;
+  background: #fff;
+  border-radius: 4px;
+  border: 1px solid var(--border-soft);
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.research-card-title {
+  font-size: 1.05rem;
+  margin: 0.3rem 0 0.4rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.research-card-meta {
+  font-size: 0.8rem;
+  color: #666;
+  margin-top: auto;
+}
+
+.research-card-link {
+  margin-top: 0.75rem;
+  background: transparent;
+  color: var(--gold);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 500;
+}
+
+.research-shelf-footer {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+/* Theme pills */
+
+.tag-pill {
+  padding: 2px 8px;
+  font-size: 0.7rem;
+  border-radius: 3px;
+  font-weight: 500;
+  width: max-content;
+}
+
+.tag-pbo {
+  background: var(--pbo-bg);
+  color: var(--pbo-text);
+  border: 1px solid var(--pbo-text);
+}
+
+.tag-learninghub {
+  background: var(--learninghub-bg);
+  color: var(--learninghub-text);
+  border: 1px solid var(--learninghub-text);
+}
+
+.tag-lrs {
+  background: var(--lrs-bg);
+  color: var(--lrs-text);
+  border: 1px solid var(--lrs-text);
+}
+
+.tag-report {
+  background: var(--report-bg);
+  color: var(--report-text);
+  border: 1px solid var(--report-text);
+}
+
+.tag-visual {
+  background: var(--visual-bg);
+  color: var(--visual-text);
+  border: 1px solid var(--visual-text);
+}
+
+.tag-opendata {
+  background: var(--opendata-bg);
+  color: var(--opendata-text);
+  border: 1px solid var(--opendata-text);
+}
+
+/* Responsive */
+@media (max-width: 800px) {
+  .module.half {
+    flex-basis: 100%;
+  }
+  .shorts-arrow-left {
+    left: -10px;
+  }
+  .shorts-arrow-right {
+    right: -10px;
+  }
+}
