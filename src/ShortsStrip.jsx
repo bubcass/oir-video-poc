@@ -1,79 +1,73 @@
 // src/ShortsStrip.jsx
 import React, { useEffect, useRef, useState } from "react";
 
-function pillClassForTag(tag = "") {
-  const name = tag.toLowerCase();
+// Map tag text → unified pill classes (shared with research shelf)
+function shortTagClass(tag = "") {
+  const t = tag.toLowerCase();
 
-  if (name.includes("budget") || name.includes("pbo")) return "short-tag short-tag-pbo";
-  if (name.includes("learning")) return "short-tag short-tag-learninghub";
-  if (name.includes("research service") || name.includes("parliamentary research"))
-    return "short-tag short-tag-lrs";
-  if (name.includes("visual")) return "short-tag short-tag-visual";
-  if (name.includes("open data")) return "short-tag short-tag-opendata";
-  if (name.includes("report")) return "short-tag short-tag-report";
+  if (t.includes("budget") || t.includes("parliamentary budget office") || t.includes("pbo")) {
+    return "pill pill-pbo";
+  }
 
-  // Inside Parliament + any other fallback
-  return "short-tag short-tag-default";
+  if (t.includes("learning hub")) {
+    return "pill pill-learninghub";
+  }
+
+  if (t.includes("research service") || t.includes("parliamentary research service") || t.includes("prs")) {
+    return "pill pill-lrs";
+  }
+
+  if (t.includes("visual")) {
+    return "pill pill-visual";
+  }
+
+  if (t.includes("open data") || t.includes("opendata")) {
+    return "pill pill-opendata";
+  }
+
+  if (t.includes("report")) {
+    return "pill pill-report";
+  }
+
+  // Inside Parliament + anything unclassified → gold pill
+  return "pill pill-inside";
 }
 
 export function ShortsStrip({ items = [], onOpenViewer }) {
   const trackRef = useRef(null);
   const videoRefs = useRef([]);
 
+  const [hoverIndex, setHoverIndex] = useState(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
-  const [hoverCapable, setHoverCapable] = useState(false);
 
   const GAP_PX = 16;
 
-  // ----------------------------------------------------
-  // Detect whether this device actually supports hover
-  // (desktop / laptop with a mouse or trackpad) vs touch
-  // ----------------------------------------------------
-  useEffect(() => {
-    if (typeof window === "undefined" || !window.matchMedia) return;
+  // --- Hover teaser behaviour ---
 
-    const mq = window.matchMedia("(hover: hover) and (pointer: fine)");
+  const handleTeaserEnter = (index) => {
+    setHoverIndex(index);
+    const v = videoRefs.current[index];
+    if (!v) return;
+    v.currentTime = 0;
+    v
+      .play()
+      .catch(() => {
+        // autoplay on hover might still be blocked; ignore
+      });
+  };
 
-    const update = (e) => setHoverCapable(e.matches);
-    // Initial value
-    setHoverCapable(mq.matches);
-
-    // Older Safari uses addListener / removeListener
-    if (mq.addEventListener) {
-      mq.addEventListener("change", update);
-      return () => mq.removeEventListener("change", update);
-    } else {
-      mq.addListener(update);
-      return () => mq.removeListener(update);
+  const handleTeaserLeave = (index) => {
+    const v = videoRefs.current[index];
+    if (v) {
+      v.pause();
+      v.currentTime = 0;
     }
-  }, []);
-
-  // ----------------------------------------------------
-  // Hover preview (desktop only)
-  // ----------------------------------------------------
-  const handleHoverStart = (index) => {
-    if (!hoverCapable) return; // no-op on touch devices
-    const v = videoRefs.current[index];
-    if (!v) return;
-    v.currentTime = 0;
-    v.play().catch(() => {
-      // Ignore autoplay failures
-    });
+    setHoverIndex((prev) => (prev === index ? null : prev));
   };
 
-  const handleHoverEnd = (index) => {
-    if (!hoverCapable) return; // no-op on touch devices
-    const v = videoRefs.current[index];
-    if (!v) return;
-    v.pause();
-    v.currentTime = 0;
-    // Most browsers will show the poster again after resetting currentTime.
-  };
+  // --- Scrolling + arrow state ---
 
-  // ----------------------------------------------------
-  // Scrolling + arrow state
-  // ----------------------------------------------------
   const updateScrollState = () => {
     const t = trackRef.current;
     if (!t) return;
@@ -147,43 +141,45 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
             role="list"
           >
             {items.map((item, index) => {
-              const tagClass = pillClassForTag(item.tag);
+              const isHovered = index === hoverIndex;
 
               return (
                 <article
                   key={item.id ?? index}
                   className="short-card"
                   role="listitem"
+                  onMouseEnter={() => handleTeaserEnter(index)}
+                  onMouseLeave={() => handleTeaserLeave(index)}
                 >
                   <div
                     className="short-media"
-                    // Desktop hover preview
-                    onMouseEnter={
-                      hoverCapable ? () => handleHoverStart(index) : undefined
-                    }
-                    onMouseLeave={
-                      hoverCapable ? () => handleHoverEnd(index) : undefined
-                    }
-                    // Tap / click opens fullscreen viewer (desktop + mobile)
+                    // Clicking anywhere on the thumbnail opens the fullscreen viewer
                     onClick={() => {
                       if (onOpenViewer) onOpenViewer(index);
                     }}
-                    role="button"
-                    tabIndex={0}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        if (onOpenViewer) onOpenViewer(index);
-                      }
-                    }}
                   >
+                    {/* Base poster thumbnail */}
+                    <img
+                      src={item.poster}
+                      alt={
+                        item.headline ||
+                        item.tag ||
+                        "Oireachtas short video"
+                      }
+                      className="short-poster"
+                      loading="lazy"
+                    />
+
+                    {/* Hover video teaser, layered on top and faded in/out */}
                     <video
                       ref={(el) => (videoRefs.current[index] = el)}
-                      className="short-video"
+                      className={
+                        "short-video" +
+                        (isHovered ? " short-video--visible" : "")
+                      }
                       muted
                       playsInline
-                      preload="none" // posters only until hover or modal
-                      poster={item.poster}
+                      preload="metadata"
                       src={item.src}
                     />
 
@@ -191,7 +187,9 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
 
                     <div className="short-labels">
                       {item.tag && (
-                        <div className={tagClass}>{item.tag}</div>
+                        <div className={shortTagClass(item.tag)}>
+                          {item.tag}
+                        </div>
                       )}
 
                       {item.headline && (
@@ -200,13 +198,15 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
                         </div>
                       )}
 
+                      {/* Always render short-info, but mark when it's empty
+                          so we can reserve height and keep everything aligned */}
                       <div
                         className={
                           "short-info" +
                           (item.info ? "" : " short-info--empty")
                         }
                       >
-                        {item.info || "\u00a0" /* keep line height */}
+                        {item.info || "\u00a0" /*nbsp keeps the line's height*/}
                       </div>
 
                       {item.duration && (
@@ -216,7 +216,7 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
                       )}
                     </div>
 
-                    {/* Play CTA, still visible as a cue but uses same handler */}
+                    {/* Play CTA – visual affordance, same behaviour as clicking the thumbnail */}
                     <button
                       type="button"
                       className="short-play-button"
