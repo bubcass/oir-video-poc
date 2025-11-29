@@ -4,5 +4,5 @@ import react from "@vitejs/plugin-react";
 
 export default defineConfig({
   plugins: [react()],
-  base: "/oir-video-poc/", // <-- repo name with leading/trailing slashes
+  base: "/oir-video-poc/"   // MUST match the repo name
 });

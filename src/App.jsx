@@ -58,14 +58,14 @@ const researchItems = [
 ];
 
 function themePillClass(theme) {
-  const name = theme.toLowerCase();
+  const name = (theme || "").toLowerCase();
 
-  if (name.includes("pbo") || name.includes("budget")) {
-    return "tag-pill tag-pbo";
+  if (name.includes("budget") || name.includes("pbo")) {
+    return "pill pill-pbo";
   }
 
   if (name.includes("learning hub")) {
-    return "tag-pill tag-learninghub";
+    return "pill pill-learninghub";
   }
 
   if (
@@ -74,34 +74,31 @@ function themePillClass(theme) {
     name.includes("library") ||
     name.includes("research service")
   ) {
-    return "tag-pill tag-lrs";
-  }
-
-  if (name.includes("report")) {
-    return "tag-pill tag-report";
+    return "pill pill-lrs";
   }
 
   if (name.includes("visual")) {
-    return "tag-pill tag-visual";
+    return "pill pill-visual";
   }
 
   if (name.includes("open data") || name.includes("opendata")) {
-    return "tag-pill tag-opendata";
+    return "pill pill-opendata";
   }
 
-  if (name.includes("inside")) {
-    return "tag-pill tag-inside";
+  if (name.includes("report")) {
+    return "pill pill-report";
   }
 
-  return "tag-pill tag-default";
+  // Default / Inside Parliament / anything else → corporate gold
+  return "pill pill-inside";
 }
 
 // --- New Stór carousel component (option 2) ---
 
 function ResearchCarousel({ items }) {
-  const trackRef = useRef(null);
-  const [canPrev, setCanPrev] = useState(false);
-  const [canNext, setCanNext] = useState(true);
+  const trackRef = React.useRef(null);
+  const [canPrev, setCanPrev] = React.useState(false);
+  const [canNext, setCanNext] = React.useState(true);
 
   const GAP_PX = 16;
 
@@ -113,7 +110,7 @@ function ResearchCarousel({ items }) {
     setCanNext(t.scrollLeft < maxScroll - 1);
   };
 
-  useEffect(() => {
+  React.useEffect(() => {
     const t = trackRef.current;
     if (!t) return;
 
@@ -122,9 +119,7 @@ function ResearchCarousel({ items }) {
     const onScroll = () => updateScrollState();
     t.addEventListener("scroll", onScroll, { passive: true });
 
-    const onResize = () => {
-      updateScrollState();
-    };
+    const onResize = () => updateScrollState();
     window.addEventListener("resize", onResize);
 
     return () => {
@@ -155,61 +150,73 @@ function ResearchCarousel({ items }) {
       className="module full research-shelf"
       aria-labelledby="research-heading"
     >
-      <div className="research-shelf-header-row">
-        <div className="research-shelf-header">
-          <h2 id="research-heading">Stór | Research and insight</h2>
-          <p className="research-shelf-intro">
-            A selection of written research, briefings and explainer material to inform Parliament.
-          </p>
-        </div>
-        <div className="research-shelf-nav">
-          <button
-            type="button"
-            className="research-nav-btn"
-            aria-label="Scroll research items left"
-            disabled={!canPrev}
-            onClick={() => scrollByDir(-1)}
-          >
-            ‹
-          </button>
-          <button
-            type="button"
-            className="research-nav-btn"
-            aria-label="Scroll research items right"
-            disabled={!canNext}
-            onClick={() => scrollByDir(1)}
-          >
-            ›
-          </button>
-        </div>
+      <div className="research-shelf-header">
+        <h2 id="research-heading">Stór | Research and insight</h2>
+        <p className="research-shelf-intro">
+          A selection of written research, visual data and briefings to inform Parliament.
+        </p>
       </div>
 
-      <div
-        className="research-shelf-track"
-        aria-label="Research highlights"
-        role="list"
-        ref={trackRef}
-      >
-        {items.map((item) => (
-          <a
-            key={item.id}
-            className="research-card"
-            href={item.href || "#"}
-            role="listitem"
-          >
-            <div className="research-card-top">
-              <span className={themePillClass(item.theme)}>{item.theme}</span>
-            </div>
-            <h3 className="research-card-title">{item.title}</h3>
-            {item.summary && (
-              <p className="research-card-summary">{item.summary}</p>
-            )}
-            {item.meta && <p className="research-card-meta">{item.meta}</p>}
-            <div className="research-card-link">
-              Read <span aria-hidden>→</span>
-            </div>
-          </a>
-        ))}
+      <div className="research-shelf-body">
+        {/* Left arrow */}
+        <button
+          type="button"
+          className="research-arrow research-arrow-left"
+          aria-label="Scroll research items left"
+          disabled={!canPrev}
+          onClick={() => scrollByDir(-1)}
+        >
+          ‹
+        </button>
+
+        {/* Track */}
+        <div
+          className="research-shelf-track no-scrollbar"
+          ref={trackRef}
+          aria-label="Research highlights"
+        >
+          {items.map((item) => (
+            <article key={item.id} className="research-card">
+              <div className="research-card-top">
+                <span className={themePillClass(item.theme)}>
+                  {item.theme}
+                </span>
+              </div>
+
+              <h3 className="research-card-title">{item.title}</h3>
+
+              {item.summary && (
+                <p className="research-card-summary">{item.summary}</p>
+              )}
+
+              {item.meta && (
+                <p className="research-card-meta">{item.meta}</p>
+              )}
+
+              {item.href && (
+                <a
+                  href={item.href}
+                  className="research-card-link"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Read more →
+                </a>
+              )}
+            </article>
+          ))}
+        </div>
+
+        {/* Right arrow */}
+        <button
+          type="button"
+          className="research-arrow research-arrow-right"
+          aria-label="Scroll research items right"
+          disabled={!canNext}
+          onClick={() => scrollByDir(1)}
+        >
+          ›
+        </button>
       </div>
 
       <div className="research-shelf-footer see-all">

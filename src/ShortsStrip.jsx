@@ -1,6 +1,38 @@
 // src/ShortsStrip.jsx
 import React, { useEffect, useRef, useState } from "react";
 
+// Map tag text → unified pill classes (shared with research shelf)
+function shortTagClass(tag = "") {
+  const t = tag.toLowerCase();
+
+  if (t.includes("budget") || t.includes("parliamentary budget office") || t.includes("pbo")) {
+    return "pill pill-pbo";
+  }
+
+  if (t.includes("learning hub")) {
+    return "pill pill-learninghub";
+  }
+
+  if (t.includes("research service") || t.includes("parliamentary research service") || t.includes("prs")) {
+    return "pill pill-lrs";
+  }
+
+  if (t.includes("visual")) {
+    return "pill pill-visual";
+  }
+
+  if (t.includes("open data") || t.includes("opendata")) {
+    return "pill pill-opendata";
+  }
+
+  if (t.includes("report")) {
+    return "pill pill-report";
+  }
+
+  // Inside Parliament + anything unclassified → gold pill
+  return "pill pill-inside";
+}
+
 export function ShortsStrip({ items = [], onOpenViewer }) {
   const trackRef = useRef(null);
   const videoRefs = useRef([]);
@@ -115,7 +147,13 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
                   className={"short-card" + (isActive ? " is-active" : "")}
                   role="listitem"
                 >
-                  <div className="short-media">
+                  <div
+                    className="short-media"
+                    // Clicking anywhere on the thumbnail opens the viewer
+                    onClick={() => {
+                      if (onOpenViewer) onOpenViewer(index);
+                    }}
+                  >
                     <video
                       ref={(el) => (videoRefs.current[index] = el)}
                       className="short-video"
@@ -130,7 +168,9 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
 
                     <div className="short-labels">
                       {item.tag && (
-                        <div className="short-tag">{item.tag}</div>
+                        <div className={shortTagClass(item.tag)}>
+                          {item.tag}
+                        </div>
                       )}
 
                       {item.headline && (
@@ -157,7 +197,7 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
                       )}
                     </div>
 
-                    {/* Play CTA now opens the fullscreen viewer */}
+                    {/* Play CTA still there as a clear affordance */}
                     <button
                       type="button"
                       className="short-play-button"
@@ -188,7 +228,10 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
 
         {/* Footer link */}
         <div className="shorts-footer see-all">
-          <a href="https://www.oireachtas.ie/en/oireachtas-tv/video-on-demand/" aria-label="Explore all videos">
+          <a
+            href="https://www.oireachtas.ie/en/oireachtas-tv/video-on-demand/"
+            aria-label="Explore all videos"
+          >
             Explore all videos
           </a>
         </div>
