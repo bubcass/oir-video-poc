@@ -43,7 +43,7 @@ body {
 }
 
 /* ----------------------------------------------------
-   MODULE + GRID 
+   MODULE + GRID
 ---------------------------------------------------- */
 
 .module {
@@ -169,31 +169,29 @@ body {
   font-weight: 500;
 }
 
-/* Reserve two lines of height for the headline block */
+/* Headline/metadata block */
+
 .short-headline {
   font-size: 1.05rem;
   font-weight: 600;
   line-height: 1.2;
-
   display: -webkit-box;
-  -webkit-line-clamp: 2;     /* allow up to 2 lines */
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  min-height: 2.6em;         /* ~2 lines at your font-size */
+  min-height: 2.6em;
 }
 
-/* Optional info line between headline and duration */
 .short-info {
   font-size: 0.82rem;
-  font-weight: 450;           /* slightly stronger than duration */
+  font-weight: 450;
   opacity: 0.9;
   margin-top: 0.15rem;
-  color: #f0f0f0;             /* softer than pure white */
+  color: #f0f0f0;
   line-height: 1.25;
-  min-height: 1.2em;          /* reserve space even if empty */
+  min-height: 1.2em;
 }
 
-/* When there's no info, keep the space but hide the text */
 .short-info--empty {
   opacity: 0;
 }
@@ -233,7 +231,7 @@ body {
   transform: scale(1.06);
 }
 
-/* Arrows */
+/* Carousel arrows */
 
 .shorts-arrow {
   position: absolute;
@@ -252,6 +250,7 @@ body {
   align-items: center;
   justify-content: center;
 }
+
 .shorts-arrow:hover:not(:disabled) {
   background: #fff;
 }
@@ -267,11 +266,28 @@ body {
   right: -18px;
 }
 
-/* Explore link */
+/* Explore link under strip */
 
-.shorts-footer {
-  margin-top: 1rem;
-  text-align: right;
+.shorts-row-footer {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.shorts-explore-link {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: var(--gold);
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.shorts-explore-link:hover,
+.shorts-explore-link:focus-visible {
+  text-decoration: underline;
 }
 
 /* ----------------------------------------------------
@@ -338,6 +354,7 @@ body {
   align-items: center;
   justify-content: center;
 }
+
 .shorts-viewer-nav:disabled {
   opacity: 0.25;
   cursor: default;
@@ -349,6 +366,7 @@ body {
   border-radius: 4px;
   overflow: hidden;
 }
+
 .shorts-viewer-video {
   width: 100%;
   height: 70vh;
@@ -454,6 +472,10 @@ body {
   text-align: right;
 }
 
+.research-shelf-footer .shorts-explore-link {
+  color: var(--gold) !important;
+}
+
 /* Theme pills */
 
 .tag-pill {
@@ -500,7 +522,167 @@ body {
   border: 1px solid var(--opendata-text);
 }
 
-/* Responsive */
+/* ----------------------------------------------------
+   ALL SHORTS PAGE
+---------------------------------------------------- */
+
+.all-shorts-page {
+  padding: 1.5rem 1rem 3rem;
+}
+
+.all-shorts-header {
+  margin-bottom: 1.5rem;
+}
+
+.site-header-top-row {
+  display: flex;
+  justify-content: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.back-link {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: #555;
+  cursor: pointer;
+  font-size: 0.85rem;
+}
+
+.back-link:hover,
+.back-link:focus-visible {
+  text-decoration: underline;
+}
+
+/* Hero */
+
+.all-shorts-hero {
+  padding: 1.25rem 0 0.5rem;
+}
+
+.all-shorts-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #777;
+  margin: 0 0 0.35rem;
+}
+
+.all-shorts-title {
+  margin: 0;
+  font-size: clamp(1.8rem, 2.6vw, 2.3rem);
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.all-shorts-hero-text {
+  margin: 0.5rem 0 0;
+  max-width: 44rem;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* Search + filters */
+
+.all-shorts-controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1.75rem 0 2.5rem;
+}
+
+.search-control.full-width {
+  width: 100%;
+}
+
+.search-control.full-width input {
+  width: 100%;
+  padding: 0.6rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  font-family: "IBM Plex Sans", system-ui, sans-serif;
+}
+
+/* Theme section headings */
+
+.all-shorts-section-header h2 {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+/* Theme checkbox row */
+
+.theme-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+}
+
+.theme-checkboxes-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #555;
+  margin-right: 0.25rem;
+}
+
+.theme-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.theme-checkbox input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--gold);
+  cursor: pointer;
+}
+
+/* Body + sections */
+
+.all-shorts-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+}
+
+.all-shorts-section {
+  border-top: 1px solid #ece7d6;
+  padding-top: 1.5rem;
+}
+
+.all-shorts-section-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.all-shorts-section-meta {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.all-shorts-empty {
+  margin-top: 3rem;
+  font-size: 0.95rem;
+  color: #666;
+}
+
+/* ----------------------------------------------------
+   RESPONSIVE
+---------------------------------------------------- */
+
 @media (max-width: 800px) {
   .module.half {
     flex-basis: 100%;

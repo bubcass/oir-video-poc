@@ -33,7 +33,7 @@ function shortTagClass(tag = "") {
   return "pill pill-inside";
 }
 
-export function ShortsStrip({ items = [], onOpenViewer }) {
+export function ShortsStrip({ items = [], onOpenViewer, showHeader = true }) {
   const trackRef = useRef(null);
   const videoRefs = useRef([]);
 
@@ -114,13 +114,15 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
   return (
     <section className="module full">
       <div className="shorts-shell">
-        {/* Header */}
-        <div className="shorts-header">
-          <h2 className="shorts-title">Inside Parliament</h2>
-          <p className="shorts-subtitle">
-            Get inside the work of the Oireachtas with our short videos.
-          </p>
-        </div>
+        {/* Header (optional) */}
+        {showHeader && (
+          <div className="shorts-header">
+            <h2 className="shorts-title">Inside Parliament</h2>
+            <p className="shorts-subtitle">
+              Get inside the work of the Oireachtas with our short videos.
+            </p>
+          </div>
+        )}
 
         {/* Body: arrows + strip */}
         <div className="shorts-body">
@@ -206,7 +208,7 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
                           (item.info ? "" : " short-info--empty")
                         }
                       >
-                        {item.info || "\u00a0" /*nbsp keeps the line's height*/}
+                        {item.info || "\u00a0" /* nbsp keeps the line's height */}
                       </div>
 
                       {item.duration && (
@@ -243,16 +245,6 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
           >
             ›
           </button>
-        </div>
-
-        {/* Footer link */}
-        <div className="shorts-footer see-all">
-          <a
-            href="https://www.oireachtas.ie/en/oireachtas-tv/video-on-demand/"
-            aria-label="Explore all videos"
-          >
-            Explore all videos
-          </a>
         </div>
       </div>
     </section>

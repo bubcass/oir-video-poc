@@ -12,6 +12,14 @@ export const shortsData = [
     poster: `${BASE}posters/short-1.jpg`,
     src:    `${BASE}video/short-1.mp4`
   },
+   {
+    id: "clip-6",
+    tag: "Parliamentary Budget Office",
+    headline: "Why housing completions matter",
+    duration: "4 min",
+    poster: `${BASE}posters/fundingMap.png`,
+    src:    `${BASE}video/rolePBO.mp4`
+  },
   {
     id: "clip-2",
     tag: "Inside Parliament",
@@ -20,14 +28,6 @@ export const shortsData = [
     duration: "5 min · 20 November",
     poster: `${BASE}posters/sean11.jpg`,
     src:    `${BASE}video/short-2.mp4`
-  },
-   {
-    id: "clip-6",
-    tag: "Parliamentary Research Service",
-    headline: "Why housing completions matter",
-    duration: "4 min",
-    poster: `${BASE}posters/fundingMap.png`,
-    src:    `${BASE}video/rolePBO.mp4`
   },
   {
     id: "clip-3",
@@ -63,7 +63,7 @@ export const shortsData = [
   },
   {
     id: "clip-5",
-    tag: "Parliamentary Budget Office",
+    tag: "Parliamentary Research Service",
     headline: "Breaking down Budget 2026",
     duration: "5 min",
     poster: `${BASE}posters/short-5.png`,
@@ -84,6 +84,6 @@ export const shortsData = [
     info: "Highlights",
     duration: "3 min · 19 November",
     poster: `${BASE}posters/short-24.jpg`,
-    src:    `${BASE}video/short-4.mp4`
+    src:    `${BASE}video/PAC_meet.mp4`
   }
 ];

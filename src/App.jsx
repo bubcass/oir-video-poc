@@ -7,6 +7,8 @@ import { FindSenatorModule } from "./FindSenatorModule";
 import { NewsPanel } from "./NewsPanel";
 import { PressPanel } from "./PressPanel";
 import { ShortsViewer } from "./ShortsViewer";
+import AllShortsPage from "./AllShortsPage"; // ⬅️ NOTE: file name + path
+
 import "./index.css";
 import "./shorts.css";
 
@@ -93,12 +95,14 @@ function themePillClass(theme) {
   return "pill pill-inside";
 }
 
-// --- New Stór carousel component (option 2) ---
+// --- Research carousel component ---
+
+// --- Research carousel component ---
 
 function ResearchCarousel({ items }) {
-  const trackRef = React.useRef(null);
-  const [canPrev, setCanPrev] = React.useState(false);
-  const [canNext, setCanNext] = React.useState(true);
+  const trackRef = useRef(null);
+  const [canPrev, setCanPrev] = useState(false);
+  const [canNext, setCanNext] = useState(true);
 
   const GAP_PX = 16;
 
@@ -110,7 +114,7 @@ function ResearchCarousel({ items }) {
     setCanNext(t.scrollLeft < maxScroll - 1);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     const t = trackRef.current;
     if (!t) return;
 
@@ -146,88 +150,94 @@ function ResearchCarousel({ items }) {
   if (!items || !items.length) return null;
 
   return (
-    <section
-      className="module full research-shelf"
-      aria-labelledby="research-heading"
-    >
-      <div className="research-shelf-header">
-        <h2 id="research-heading">Stór | Research and insight</h2>
-        <p className="research-shelf-intro">
-          A selection of written research, visual data and briefings to inform Parliament.
-        </p>
-      </div>
-
-      <div className="research-shelf-body">
-        {/* Left arrow */}
-        <button
-          type="button"
-          className="research-arrow research-arrow-left"
-          aria-label="Scroll research items left"
-          disabled={!canPrev}
-          onClick={() => scrollByDir(-1)}
-        >
-          ‹
-        </button>
-
-        {/* Track */}
-        <div
-          className="research-shelf-track no-scrollbar"
-          ref={trackRef}
-          aria-label="Research highlights"
-        >
-          {items.map((item) => (
-            <article key={item.id} className="research-card">
-              <div className="research-card-top">
-                <span className={themePillClass(item.theme)}>
-                  {item.theme}
-                </span>
-              </div>
-
-              <h3 className="research-card-title">{item.title}</h3>
-
-              {item.summary && (
-                <p className="research-card-summary">{item.summary}</p>
-              )}
-
-              {item.meta && (
-                <p className="research-card-meta">{item.meta}</p>
-              )}
-
-              {item.href && (
-                <a
-                  href={item.href}
-                  className="research-card-link"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Read more →
-                </a>
-              )}
-            </article>
-          ))}
+    <>
+      {/* White module with carousel only */}
+      <section
+        className="module full research-shelf"
+        aria-labelledby="research-heading"
+      >
+        <div className="research-shelf-header">
+          <h2 id="research-heading">Stór | Research and insight</h2>
+          <p className="research-shelf-intro">
+            A selection of written research, visual data and briefings to inform Parliament.
+          </p>
         </div>
 
-        {/* Right arrow */}
-        <button
-          type="button"
-          className="research-arrow research-arrow-right"
-          aria-label="Scroll research items right"
-          disabled={!canNext}
-          onClick={() => scrollByDir(1)}
-        >
-          ›
-        </button>
-      </div>
+        <div className="research-shelf-body">
+          {/* Left arrow */}
+          <button
+            type="button"
+            className="research-arrow research-arrow-left"
+            aria-label="Scroll research items left"
+            disabled={!canPrev}
+            onClick={() => scrollByDir(-1)}
+          >
+            ‹
+          </button>
 
-      <div className="research-shelf-footer see-all">
+          {/* Track */}
+          <div
+            className="research-shelf-track no-scrollbar"
+            ref={trackRef}
+            aria-label="Research highlights"
+          >
+            {items.map((item) => (
+              <article key={item.id} className="research-card">
+                <div className="research-card-top">
+                  <span className={themePillClass(item.theme)}>
+                    {item.theme}
+                  </span>
+                </div>
+
+                <h3 className="research-card-title">{item.title}</h3>
+
+                {item.summary && (
+                  <p className="research-card-summary">{item.summary}</p>
+                )}
+
+                {item.meta && (
+                  <p className="research-card-meta">{item.meta}</p>
+                )}
+
+                {item.href && (
+                  <button
+                    type="button"
+                    className="research-card-link"
+                    onClick={() => window.open(item.href, "_blank", "noreferrer")}
+                  >
+                    Read more →
+                  </button>
+                )}
+              </article>
+            ))}
+          </div>
+
+          {/* Right arrow */}
+          <button
+            type="button"
+            className="research-arrow research-arrow-right"
+            aria-label="Scroll research items right"
+            disabled={!canNext}
+            onClick={() => scrollByDir(1)}
+          >
+            ›
+          </button>
+        </div>
+      </section>
+
+      {/* Gold “Explore our insights” link BELOW the white card, like videos */}
+      <div className="research-shelf-footer">
         <a
           href="https://www.oireachtas.ie/en/how-parliament-is-run/houses-of-the-oireachtas-service/library-and-research-service/"
           aria-label="See all research from Stór"
+          className="shorts-explore-link research-explore-link"
+          target="_blank"
+          rel="noreferrer"
         >
-          Explore our insights
+          Explore our insights →
         </a>
       </div>
-    </section>
+    </>
   );
 }
 
@@ -237,6 +247,15 @@ export default function App() {
   const [viewerOpen, setViewerOpen] = useState(false);
   const [viewerIndex, setViewerIndex] = useState(0);
 
+  // Which view are we on? "home" | "allShorts"
+  const [view, setView] = useState("home");
+
+  // If we’re on the All Shorts page, render that instead of the homepage
+  if (view === "allShorts") {
+    return <AllShortsPage onBack={() => setView("home")} />;
+  }
+
+  // Homepage layout (original POC)
   return (
     <main className="page">
       <header className="site-header">
@@ -265,6 +284,17 @@ export default function App() {
             setViewerOpen(true);
           }}
         />
+
+        {/* Explore all videos link → switches to AllShorts view */}
+        <div className="shorts-row-footer">
+          <button
+            type="button"
+            className="shorts-explore-link"
+            onClick={() => setView("allShorts")}
+          >
+            Explore all videos →
+          </button>
+        </div>
       </section>
 
       {/* Row 3: Research carousel (Stór) */}
@@ -280,6 +310,7 @@ export default function App() {
         Prototype layout only, integration of video carousel and research shelf.
       </footer>
 
+      {/* Fullscreen viewer for homepage strip */}
       {viewerOpen && (
         <ShortsViewer
           items={shortsData}

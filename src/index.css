@@ -834,6 +834,44 @@ a:visited {
   cursor: default;
 }
 
+/* Shared explore-link style for videos + research */
+
+.shorts-row-footer {
+  margin-top: 0.75rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.shorts-explore-link {
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: #7f6c2e;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.research-shelf-footer a.shorts-explore-link {
+  color: var(--gold);
+}
+.shorts-explore-link:hover,
+.shorts-explore-link:focus-visible {
+  text-decoration: underline;
+}
+
+/* Optional: tweak research version separately if needed */
+.research-explore-link {
+  /* e.g. slightly smaller, or aligned differently */
+  font-size: 0.95rem;
+}
+
+.all-shorts-section-header h2 {
+  color: var(--gold);
+  font-weight: 600;
+}
+
 /* Picture-in-picture button */
 
 .shorts-viewer-actions {
