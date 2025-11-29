@@ -289,6 +289,222 @@ a:visited {
 }
 
 /* ==========================================================================
+   SHORTS STRIP (hover teaser behaviour)
+   ========================================================================== */
+
+/* Container for the strip; structure comes from JSX,
+   here we're just defining hover behaviour pieces. */
+
+.shorts-shell {
+  width: 100%;
+}
+
+.shorts-header {
+  margin-bottom: 1rem;
+}
+
+.shorts-title {
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: var(--gold);
+}
+
+.shorts-subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 0.25rem;
+}
+
+.shorts-body {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.shorts-strip {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 0.25rem 0;
+}
+
+/* hide scrollbar, keep scroll functionality */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.short-card {
+  flex: 0 0 auto;
+  width: 230px;
+}
+
+/* Base media container */
+.short-media {
+  position: relative;
+  width: 100%;
+  height: 380px;
+  border-radius: 4px;
+  overflow: hidden;
+  background: #000;
+  cursor: pointer; /* whole thumb is clickable */
+}
+
+/* Poster thumbnail image (default state) */
+.short-poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+}
+
+/* Video teaser layered over poster, only visible when hovered */
+.short-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 4px;
+  opacity: 0;
+  pointer-events: none; /* clicks go to .short-media */
+  transition: opacity 150ms ease-out;
+}
+
+/* When card is hovered (JS adds this class), fade video in */
+.short-video.short-video--visible {
+  opacity: 1;
+}
+
+/* Gradient + labels reused from earlier implementation */
+.short-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.65));
+  border-radius: 4px;
+  pointer-events: none;
+}
+
+.short-labels {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  right: 0.75rem;
+  color: #fff;
+  z-index: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+/* Headline alignment – reserve enough height for two lines */
+.short-headline {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.2;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* up to 2 lines */
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2.6em; /* keeps single-line and two-line headlines aligned */
+}
+
+/* Info row: “Leaders’ Questions”, “Highlights”, etc. */
+.short-info {
+  font-size: 0.82rem;
+  font-weight: 450;
+  opacity: 0.9;
+  margin-top: 0.15rem;
+  color: #f0f0f0;
+  line-height: 1.25;
+}
+
+/* When empty, we still keep the vertical rhythm */
+.short-info.short-info--empty {
+  visibility: hidden;
+}
+
+/* Duration (bottom line) */
+.short-duration {
+  font-size: 0.75rem;
+  opacity: 0.85;
+}
+
+/* Play CTA button on thumbnail */
+.short-play-button {
+  position: absolute;
+  right: 0.65rem;
+  bottom: 0.65rem;
+  z-index: 4;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  cursor: pointer;
+  transition: all 140ms ease-out;
+}
+
+.short-play-button:hover {
+  background: rgba(0, 0, 0, 0.75);
+  border-color: #fff;
+  transform: scale(1.06);
+}
+
+/* Arrows framing the strip (matching research arrows) */
+.shorts-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.85);
+  border-radius: 4px;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border-soft);
+  font-size: 20px;
+  color: #444;
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shorts-arrow:hover:not(:disabled) {
+  background: #fff;
+}
+.shorts-arrow:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.shorts-arrow-left {
+  left: -18px;
+}
+.shorts-arrow-right {
+  right: -18px;
+}
+
+/* Footer link under strip */
+.shorts-footer {
+  margin-top: 1rem;
+  text-align: right;
+}
+
+/* ==========================================================================
    UNIFIED THEME PILLS (Research + Shorts)
    ========================================================================== */
 
@@ -418,12 +634,7 @@ a:visited {
 }
 
 /* Hide scrollbar but keep scrolling */
-.no-scrollbar {
-  scrollbar-width: none;
-}
-.no-scrollbar::-webkit-scrollbar {
-  display: none;
-}
+/* (shared .no-scrollbar already defined above) */
 
 /* Arrows (aligned visually with shorts arrows) */
 

@@ -36,35 +36,38 @@ function shortTagClass(tag = "") {
 export function ShortsStrip({ items = [], onOpenViewer }) {
   const trackRef = useRef(null);
   const videoRefs = useRef([]);
-  const currentVideoIndexRef = useRef(null);
 
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [hoverIndex, setHoverIndex] = useState(null);
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(true);
 
   const GAP_PX = 16;
 
-  // --- Inline autoplay only for the first short ---
-  const autoplayFirst = () => {
-    const v = videoRefs.current[0];
+  // --- Hover teaser behaviour ---
+
+  const handleTeaserEnter = (index) => {
+    setHoverIndex(index);
+    const v = videoRefs.current[index];
     if (!v) return;
     v.currentTime = 0;
     v
       .play()
       .catch(() => {
-        // ignore autoplay errors
+        // autoplay on hover might still be blocked; ignore
       });
-    currentVideoIndexRef.current = 0;
-    setActiveIndex(0);
   };
 
-  useEffect(() => {
-    if (!items.length) return;
-    autoplayFirst();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [items.length]);
+  const handleTeaserLeave = (index) => {
+    const v = videoRefs.current[index];
+    if (v) {
+      v.pause();
+      v.currentTime = 0;
+    }
+    setHoverIndex((prev) => (prev === index ? null : prev));
+  };
 
   // --- Scrolling + arrow state ---
+
   const updateScrollState = () => {
     const t = trackRef.current;
     if (!t) return;
@@ -82,9 +85,7 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
     const onScroll = () => updateScrollState();
     t.addEventListener("scroll", onScroll, { passive: true });
 
-    const onResize = () => {
-      updateScrollState();
-    };
+    const onResize = () => updateScrollState();
     window.addEventListener("resize", onResize);
 
     return () => {
@@ -140,27 +141,45 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
             role="list"
           >
             {items.map((item, index) => {
-              const isActive = index === activeIndex;
+              const isHovered = index === hoverIndex;
+
               return (
                 <article
                   key={item.id ?? index}
-                  className={"short-card" + (isActive ? " is-active" : "")}
+                  className="short-card"
                   role="listitem"
+                  onMouseEnter={() => handleTeaserEnter(index)}
+                  onMouseLeave={() => handleTeaserLeave(index)}
                 >
                   <div
                     className="short-media"
-                    // Clicking anywhere on the thumbnail opens the viewer
+                    // Clicking anywhere on the thumbnail opens the fullscreen viewer
                     onClick={() => {
                       if (onOpenViewer) onOpenViewer(index);
                     }}
                   >
+                    {/* Base poster thumbnail */}
+                    <img
+                      src={item.poster}
+                      alt={
+                        item.headline ||
+                        item.tag ||
+                        "Oireachtas short video"
+                      }
+                      className="short-poster"
+                      loading="lazy"
+                    />
+
+                    {/* Hover video teaser, layered on top and faded in/out */}
                     <video
                       ref={(el) => (videoRefs.current[index] = el)}
-                      className="short-video"
+                      className={
+                        "short-video" +
+                        (isHovered ? " short-video--visible" : "")
+                      }
                       muted
                       playsInline
-                      preload={index === 0 ? "metadata" : "none"}
-                      poster={item.poster}
+                      preload="metadata"
                       src={item.src}
                     />
 
@@ -187,7 +206,7 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
                           (item.info ? "" : " short-info--empty")
                         }
                       >
-                        {item.info || "\u00a0" /* nbsp to keep line height */}
+                        {item.info || "\u00a0" /*nbsp keeps the line's height*/}
                       </div>
 
                       {item.duration && (
@@ -197,7 +216,7 @@ export function ShortsStrip({ items = [], onOpenViewer }) {
                       )}
                     </div>
 
-                    {/* Play CTA still there as a clear affordance */}
+                    {/* Play CTA – visual affordance, same behaviour as clicking the thumbnail */}
                     <button
                       type="button"
                       className="short-play-button"
